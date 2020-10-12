@@ -39,7 +39,11 @@ void main()
 	int connResult = connect(sock, (sockaddr*)&hint, sizeof(hint));
 	if (connResult == SOCKET_ERROR)
 	{
-		cerr << "Can't connect to server, Err #" << WSAGetLastError() << endl;
+		int error = WSAGetLastError();
+		if (error == 10061)
+			cerr << "Can't connect to server, Error: timeout" << endl;
+		else
+			cerr << "Can't connect to server, Error: #" << error << endl;
 		closesocket(sock);
 		WSACleanup();
 		return;
@@ -49,30 +53,20 @@ void main()
 	char buf[4096];
 	string userInput;
 
-	do
+	// Prompt the user for some text
+	cout << "> ";
+	getline(cin, userInput); // all the protcal input for the Network 3 lab here ==>
+
+	if (userInput.size() > 0)		// Make sure the user has typed in something
 	{
-		// Prompt the user for some text
-		cout << "> ";
-		getline(cin, userInput);
-
-		if (userInput.size() > 0)		// Make sure the user has typed in something
-		{
-			// Send the text
-			int sendResult = send(sock, userInput.c_str(), userInput.size() + 1, 0);
-			if (sendResult != SOCKET_ERROR)
-			{
-				// Wait for response
-				ZeroMemory(buf, 4096);
-				int bytesReceived = recv(sock, buf, 4096, 0);
-				if (bytesReceived > 0)
-				{
-					// Echo response to console
-					cout << "SERVER> " << string(buf, 0, bytesReceived) << endl;
-				}
-			}
-		}
-
-	} while (userInput.size() > 0);
+		// Send the text
+		int sendResult = send(sock, userInput.c_str(), userInput.size() + 1, 0);
+	}
+	else
+	{
+		std::cout << "GRINGO!";
+		return;
+	}
 
 	// Gracefully close down everything
 	closesocket(sock);

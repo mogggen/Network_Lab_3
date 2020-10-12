@@ -47,7 +47,7 @@ public class GUI
         BufferedReader bf = new BufferedReader(in);
 
         String str = bf.readLine();
-        System.out.println("client: " + str);
+        System.out.println("client: " + str); // x, y, color
     }
 
     public static void main(String[] args) throws IOException
