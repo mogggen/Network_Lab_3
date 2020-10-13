@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 public class GUI extends JComponent
@@ -67,41 +68,40 @@ public class GUI extends JComponent
             ss = new ServerSocket(port);
             s = ss.accept();
             System.out.println("client connected");
-        }
-
-        public String listen() throws IOException
-        {
             in = new InputStreamReader(s.getInputStream());
             bf = new BufferedReader(in);
+        }
 
-            String str = bf.readLine();
-            return str;
+        public char[] listen() throws IOException
+        {
+
+
+            char[] data = new char[256];
+
+            for (int i = 0; i < data.length; i++) {
+                data[i] = (char)bf.read();
+                if (data[i] == 0) break;
+            }
+            return data;
         }
     }
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException, InterruptedException {
         ArrayList<PixelCanvas> info = new ArrayList<>();
         Server server = new Server(4999);
         do {
-                if (server.listen() != null) {
-                    System.out.println(server.listen() != null);
-                    System.out.println("here");
-                    System.out.println(server);
-                    System.out.println(server.listen());
-                }
+            try {
+                System.out.println(server.listen());
+            }catch (SocketException s){
+                System.out.println("Error: an empty string was received, Terminating...");
+                return;
+            }
 
                 //redecorate
                 //for (int i = 0; i < info.length; i++) {
                 //    info[i] = info[i].replace(" ", "");
                 //}
-
-
-
-
-
-                new GUI(new String[]{});
-            }while (true);
-
+         }while (true);
+        //new GUI(new String[]{});
     }
 }

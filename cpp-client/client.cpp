@@ -44,21 +44,23 @@ void main()
 	}
 
 	// Do-while loop to send and receive data
-	char buf[256];
 	string userInput; // all the protcal input for the Network 3 lab here ==> x, y, c
 
+	while (true)
+	{
 
-	cout << "> ";
-	getline(cin, userInput);
-	if (userInput.size() > 0)		// Make sure the user has typed in something
-	{
-		// Send the text
-		send(sock, userInput.c_str(), userInput.size() + 1, 0);
-	}
-	else
-	{
-		std::cout << "GRINGO!";
-		return;
+		cout << "> ";
+		getline(cin, userInput);
+		if (userInput.size() > 0)		// Make sure the user has typed in something
+		{
+			// Send the text
+			send(sock, userInput.c_str(), userInput.size() + 1, 0);
+		}
+		else
+		{
+			std::cout << "\"\"";
+			return;
+		}
 	}
 	// Gracefully close down everything
 	closesocket(sock);
