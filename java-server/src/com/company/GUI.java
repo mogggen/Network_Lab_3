@@ -14,9 +14,6 @@ public class GUI extends JComponent
     // class constructor
     public GUI(String[] str)
     {
-        for (String s : str) {
-            System.out.println(s);
-        }
         JFrame frame = new JFrame();
         PixelCanvas canvas = new PixelCanvas();
         canvas.setBounds(0, 0, 201, 201);
@@ -74,8 +71,6 @@ public class GUI extends JComponent
 
         public char[] listen() throws IOException
         {
-
-
             char[] data = new char[256];
 
             for (int i = 0; i < data.length; i++) {
