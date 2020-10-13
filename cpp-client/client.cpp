@@ -22,12 +22,6 @@ void main()
 
 	// Create socket
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock == INVALID_SOCKET)
-	{
-		cerr << "Can't create socket, Err #" << WSAGetLastError() << endl;
-		WSACleanup();
-		return;
-	}
 
 	// Fill in a hint structure
 	sockaddr_in hint;
@@ -50,7 +44,7 @@ void main()
 	}
 
 	// Do-while loop to send and receive data
-	char buf[4096];
+	char buf[256];
 	string userInput;
 
 	// Prompt the user for some text

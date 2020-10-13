@@ -17,6 +17,7 @@ public class GUI
     private final JFrame frame;
     private final JPanel panel;
 
+    // class constuctor
     public GUI()
     {
         frame = new JFrame();
@@ -36,6 +37,8 @@ public class GUI
         frame.setVisible(true);
     }
 
+
+    //load data from server
     public static void server(int port) throws IOException
     {
         ServerSocket ss = new ServerSocket(port);
