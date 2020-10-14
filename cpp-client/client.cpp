@@ -45,12 +45,12 @@ void main()
 
 	// Do-while loop to send and receive data
 	string userInput; // all the protcal input for the Network 3 lab here ==> x, y, c
-
+	userInput = { (char)0, (char)0, (char)5 , '\0' };//"d2\x03";
 	while (true)
 	{
-
 		cout << "> ";
 		getline(cin, userInput);
+		
 		if (userInput.size() > 0)		// Make sure the user has typed in something
 		{
 			// Send the text
@@ -61,6 +61,7 @@ void main()
 			std::cout << "\"\"";
 			return;
 		}
+		
 	}
 	// Gracefully close down everything
 	closesocket(sock);
