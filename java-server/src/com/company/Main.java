@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ContentHandler;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -101,27 +102,19 @@ public class Main extends JComponent
 
         public void listen(GUI window) throws IOException
         {
-            char[] temp = new char[201];
+            ArrayList<Character> temp = new ArrayList<>();
 
             int i = 0;
-                for (; i < temp.length; i++) {
-                temp[i] = (char)bf.read();
-                if (temp[i] == 0) break;
-                }
-
-            char[] data = new char[i];
-            ArrayList<Pixel> info = new ArrayList<>();
-            for (int j = 0; j < i; j++) {
-                data[j] = temp[j];
+            while (true) {
+                temp.add((char) bf.read());
+                if (temp.get(temp.size() - 1) == 0) break;
             }
+            ArrayList<Pixel> info = new ArrayList<>();
                 //Reformat
                 info.clear();
-                for (int k = 0; k < data.length; k += 3) {
-                    info.add(new Pixel(data[k], data[k + 1], data[k + 2])); // always a multiple of three
+                for (int k = 0; k < temp.size(); k += 3) {
+                    info.add(new Pixel(temp.get(k), temp.get(k + 1), temp.get(k + 2))); // always a multiple of three
                 }
-                System.out.println(info.get(0).getX());
-                System.out.println(info.get(0).getY());
-                System.out.println(info.get(0).getC());
                 window.canvas.Draw(info);
                 window.frame.repaint();
         }
