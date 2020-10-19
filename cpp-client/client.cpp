@@ -5,6 +5,11 @@
 
 using namespace std;
 
+string DataToCharArr(string val, int x, int y, int color)
+{
+	return val + string({(char)x, (char)y, (char)color});
+}
+
 void main()
 {
 	string ipAddress = "127.0.0.1";			// IP Address of the server
@@ -44,25 +49,28 @@ void main()
 	}
 
 	// Do-while loop to send and receive data
-	string userInput; // all the protcal input for the Network 3 lab here ==> x, y, c
-	userInput = { (char)0, (char)0, (char)5 , '\0' };//"d2\x03";
+	string input = "";
+	input = DataToCharArr(input, 30, 30, 1);
 	while (true)
 	{
+
 		cout << "> ";
-		getline(cin, userInput);
-		
-		if (userInput.size() > 0)		// Make sure the user has typed in something
+		//getline(cin, input);
+
+		if (input.size() > 0)		// Make sure the user has typed in something
 		{
 			// Send the text
-			send(sock, userInput.c_str(), userInput.size() + 1, 0);
+			send(sock, input.c_str(), input.size() + 1, 0);
 		}
 		else
 		{
 			std::cout << "\"\"";
 			return;
 		}
-		
+		int t;
+		cin >> t;
 	}
+	
 	// Gracefully close down everything
 	closesocket(sock);
 	WSACleanup();

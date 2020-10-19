@@ -63,6 +63,7 @@ public class Main extends JComponent
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
+            System.out.println("sats");
             if (arr != null) {
                 for (int i = 0; i < arr.size(); i++) {
                     if (arr.get(i).c > 8) {
@@ -100,29 +101,29 @@ public class Main extends JComponent
 
         public void listen(GUI window) throws IOException
         {
-            char[] temp = new char[201 * 201 * 4];
+            char[] temp = new char[201];
 
             int i = 0;
-            for (i = 0; i < temp.length; i++) {
+                for (; i < temp.length; i++) {
                 temp[i] = (char)bf.read();
                 if (temp[i] == 0) break;
-            }
+                }
 
             char[] data = new char[i];
             ArrayList<Pixel> info = new ArrayList<>();
-
-            do {
-                for (int j = 0; j < i; j++) {
-                    data[j] = temp[j];
-                }
-
+            for (int j = 0; j < i; j++) {
+                data[j] = temp[j];
+            }
                 //Reformat
                 info.clear();
                 for (int k = 0; k < data.length; k += 3) {
-                    info.add(new Pixel(data[k], data[k + 1], data[k + 2]));
+                    info.add(new Pixel(data[k], data[k + 1], data[k + 2])); // always a multiple of three
                 }
+                System.out.println(info.get(0).getX());
+                System.out.println(info.get(0).getY());
+                System.out.println(info.get(0).getC());
                 window.canvas.Draw(info);
-            }while(true);
+                window.frame.repaint();
         }
     }
 
