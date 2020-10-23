@@ -1,17 +1,23 @@
 #include <iostream>
+#include <ctime>
 #include <string>
+#include <cstring>
 #include <WS2tcpip.h>
+#include <thread>
 #pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
 
-string DataToCharArr(string val, int x, int y, int color)
+char* DataToCharArr(int x, int y, int c)
 {
-	return val + string({(char)x, (char)y, (char)color});
+	char* temp = new char[3] { (char)x, (char)y, (char)c };
+
+	return temp;
 }
 
 void main()
 {
+	srand((unsigned)time(0));
 	string ipAddress = "127.0.0.1";			// IP Address of the server
 	int port = 4999;						// Listening port # on the server
 
@@ -48,27 +54,13 @@ void main()
 		return;
 	}
 
-	// Do-while loop to send and receive data
-	string input = "";
-	input = DataToCharArr(input, 30, 30, 1);
+	// while loop to send data
+	char* input;
 	while (true)
 	{
-
-		cout << "> ";
-		//getline(cin, input);
-
-		if (input.size() > 0)		// Make sure the user has typed in something
-		{
-			// Send the text
-			send(sock, input.c_str(), input.size() + 1, 0);
-		}
-		else
-		{
-			std::cout << "\"\"";
-			return;
-		}
-		int t;
-		cin >> t;
+		Sleep(1000);
+		input = DataToCharArr(rand() % 201, rand() % 201, rand() % 9);
+		send(sock, input, 3, 0);
 	}
 	
 	// Gracefully close down everything

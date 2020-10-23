@@ -1,13 +1,11 @@
 package com.company;
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.ContentHandler;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
+import java.rmi.server.ExportException;
 import java.util.ArrayList;
 
 public class Main extends JComponent
@@ -56,7 +54,7 @@ public class Main extends JComponent
     static class PixelCanvas extends JComponent
     {
         ArrayList<Pixel> arr;
-        void Draw(ArrayList<Pixel> arr)
+        void SetParamArr(ArrayList<Pixel> arr)
         {
             this.arr = arr;
         }
@@ -64,15 +62,14 @@ public class Main extends JComponent
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            System.out.println("sats");
             if (arr != null) {
-                for (int i = 0; i < arr.size(); i++) {
-                    if (arr.get(i).c > 8) {
-                        System.out.println("Screams in agony");
+                for (Pixel pixel : arr) {
+                    if (pixel.c == 0) {
                         return;
                     }
-                    g.setColor(new Color(arr.get(i).getC() * 34, arr.get(i).getC() * 34, arr.get(i).getC() * 34));
-                    g.fillRect(arr.get(i).getX(), arr.get(i).getY(), 10, 10);
+                    System.out.println((255 - (8 - pixel.getC()) * 32) + " " + pixel.getC() * 32 + " " + (255 - (8 - pixel.getC()) * 32));
+                    g.setColor(new Color(255 - (8 - pixel.getC()) * 32, pixel.getC() * 32 - 1, 255 - (8 - pixel.getC()) * 32));
+                    g.fillRect(pixel.getX(), pixel.getY(), 10, 10);
                 }
             }
         }
@@ -86,45 +83,54 @@ public class Main extends JComponent
     //load data from server
     public static class Server
     {
+        ArrayList<Byte> byteBuf = new ArrayList<>();
+        ArrayList<Pixel> info = new ArrayList<>();
         ServerSocket ss;
         Socket s;
-        InputStreamReader in;
-        BufferedReader bf;
+        InputStream in;
 
-        public Server(int port) throws IOException
-        {
+        public Server(int port) throws IOException {
             ss = new ServerSocket(port);
             s = ss.accept();
+            in = s.getInputStream();
             System.out.println("client connected");
-            in = new InputStreamReader(s.getInputStream());
-            bf = new BufferedReader(in);
         }
 
-        public void listen(GUI window) throws IOException
-        {
-            ArrayList<Character> temp = new ArrayList<>();
-
-            int i = 0;
-            while (true) {
-                temp.add((char) bf.read());
-                if (temp.get(temp.size() - 1) == 0) break;
-            }
-            ArrayList<Pixel> info = new ArrayList<>();
-                //Reformat
-                info.clear();
-                for (int k = 0; k < temp.size(); k += 3) {
-                    info.add(new Pixel(temp.get(k), temp.get(k + 1), temp.get(k + 2))); // always a multiple of three
+        public void listen(GUI window) throws IOException {
+            byte temp;
+                for (byte i = 0; i < 3; i++) {
+                    temp = (byte) in.read();
+                    byteBuf.add(temp);
                 }
-                window.canvas.Draw(info);
-                window.frame.repaint();
+
+            //Reformat
+            for (int k = 0; k < byteBuf.size(); k += 3) {
+                info.add(new Pixel(Byte.toUnsignedInt(byteBuf.get(k)), Byte.toUnsignedInt(byteBuf.get(k + 1)), Byte.toUnsignedInt(byteBuf.get(k + 2)))); // always a multiple of three
+            }
+            window.canvas.SetParamArr(info);
+            window.frame.repaint();
+
+            byteBuf.clear();
         }
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException{
 
         GUI window = new GUI();
         Server server = new Server(4999);
-        server.listen(window);
         new Main();
+        while(true) {
+            try {
+                Thread.sleep(1000);
+                server.listen(window);
+            }catch (ExportException e){
+                System.out.println(e);
+                break;
+            }
+            catch (Exception e){
+                System.out.println(e);
+                return;
+            }
+        }
     }
 }
