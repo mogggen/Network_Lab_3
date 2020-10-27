@@ -50,14 +50,21 @@ public class Main extends JComponent
             return c;
         }
     }
-
+    static int Fit(int input, int inputStart, int inputEnd, float outputStart, float outputEnd)
+    {
+        return (int)(outputStart + (outputEnd - outputStart) / (inputEnd - inputStart) * (input - inputStart));
+    }
+    //handles the drawing of the input value
     static class PixelCanvas extends JComponent
     {
         ArrayList<Pixel> arr;
         void SetParamArr(ArrayList<Pixel> arr)
         {
+            System.out.println(this.arr);
             this.arr = arr;
         }
+
+
 
         @Override
         protected void paintComponent(Graphics g) {
@@ -67,8 +74,9 @@ public class Main extends JComponent
                     if (pixel.c == 0) {
                         return;
                     }
-                    System.out.println((255 - (8 - pixel.getC()) * 32) + " " + pixel.getC() * 32 + " " + (255 - (8 - pixel.getC()) * 32));
-                    g.setColor(new Color(255 - (8 - pixel.getC()) * 32, pixel.getC() * 32 - 1, 255 - (8 - pixel.getC()) * 32));
+                    int up = Fit(pixel.getC(), 1, 8, 0, 255);
+                    int down = Fit(pixel.getC(), 8, 1, 0, 255);
+                    g.setColor(new Color(down,up,down));
                     g.fillRect(pixel.getX(), pixel.getY(), 10, 10);
                 }
             }
@@ -80,7 +88,6 @@ public class Main extends JComponent
         }
     }
 
-    //load data from server
     public static class Server
     {
         ArrayList<Byte> byteBuf = new ArrayList<>();
@@ -96,6 +103,7 @@ public class Main extends JComponent
             System.out.println("client connected");
         }
 
+        //Reads Bytes from the input stream
         public void listen(GUI window) throws IOException {
             byte temp;
                 for (byte i = 0; i < 3; i++) {
