@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ctime>
+#include <cmath>
 #include <string>
 #include <cstring>
 #include <WS2tcpip.h>
@@ -15,7 +16,8 @@ char* DataToCharArr(int x, int y, int c)
 
 void main()
 {
-	srand((unsigned)time(0));
+	srand(160399154290);//(unsigned)time(0));
+	//std::cout << time(0);
 	std::string ipAddress = "127.0.0.1";// IP Address of the server
 	int port = 4999;// Listening port on the server
 
@@ -53,12 +55,20 @@ void main()
 		return;
 	}
 
-
-
 	// while loop to send data
 	char* buf;
-	
-	send(sock, input, 3, 0);
+	while(true)
+	{
+		Sleep(1000);
+		buf = DataToCharArr(abs(rand() % 201), abs(rand() % 201), abs(rand() % 9));
+		for (char i = 0; i < 3; i++)
+		{
+			printf("%d\n", (unsigned char)buf[i]);
+			std::cout << (int)buf[i] << " ";
+		}
+		std::cout << std::endl;
+		send(sock, buf, 3, 0);
+	}
 
 	// Close everything
 	closesocket(sock);
