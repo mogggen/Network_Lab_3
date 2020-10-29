@@ -1,6 +1,5 @@
 #include <iostream>
 #include <ctime>
-#include <cmath>
 #include <string>
 #include <cstring>
 #include <WS2tcpip.h>
@@ -56,15 +55,14 @@ void main()
 	}
 
 	// while loop to send data
-	char* buf;
+	unsigned int* buf;
 	while(true)
 	{
 		Sleep(1000);
 		buf = DataToCharArr(abs(rand() % 201), abs(rand() % 201), abs(rand() % 9));
 		for (char i = 0; i < 3; i++)
 		{
-			printf("%d\n", (unsigned char)buf[i]);
-			std::cout << (int)buf[i] << " ";
+			buf(unsigned int)buf[i] << " ";
 		}
 		std::cout << std::endl;
 		send(sock, buf, 3, 0);
