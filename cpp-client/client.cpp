@@ -6,10 +6,10 @@
 #include <thread>
 #pragma comment(lib, "ws2_32.lib")
 
-char* DataToCharArr(int x, int y, int c)
+char* DataToCharArr(char x, char y, char c)
 {
-	char* temp = new char[3] { (char)x, (char)y, (char)c };
-
+	char* temp = new char[3] { x, y, c };
+	
 	return temp;
 }
 
@@ -54,17 +54,12 @@ void main()
 		return;
 	}
 
-	// while loop to send data
-	unsigned int* buf;
+	// While loop to send data
+	char* buf;
 	while(true)
 	{
-		Sleep(1000);
-		buf = DataToCharArr(abs(rand() % 201), abs(rand() % 201), abs(rand() % 9));
-		for (char i = 0; i < 3; i++)
-		{
-			buf(unsigned int)buf[i] << " ";
-		}
-		std::cout << std::endl;
+		buf = DataToCharArr(rand() % 201, rand() % 201, rand() % 9);
+		//send charBuffer
 		send(sock, buf, 3, 0);
 	}
 

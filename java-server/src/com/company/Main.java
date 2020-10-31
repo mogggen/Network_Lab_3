@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.server.ExportException;
-import java.util.ArrayList;
 
 public class Main extends JComponent
 {
@@ -33,9 +32,9 @@ public class Main extends JComponent
         int x, y, c;
         public Pixel(int x, int y, int c)
         {
-            this.x = x;
-            this.y = y;
-            this.c = c;
+            this.x = x & 0xFF;
+            this.y = y & 0xFF;
+            this.c = c & 0xFF;
         }
 
         public int getX() {
@@ -50,10 +49,13 @@ public class Main extends JComponent
             return c;
         }
     }
-    static int Fit(int input, int inputStart, int inputEnd, float outputStart, float outputEnd)
+
+    //creates a uniform map of the 9 color inputs
+    static int Map(int input, int inputStart, int inputEnd, float outputStart, float outputEnd)
     {
         return (int)(outputStart + (outputEnd - outputStart) / (inputEnd - inputStart) * (input - inputStart));
     }
+
     //handles the drawing of the input value
     static class PixelCanvas extends JComponent
     {
@@ -70,10 +72,10 @@ public class Main extends JComponent
                 if (pixel.c == 0) {
                     return;
                 }
-                int up = Fit(pixel.getC(), 1, 8, 0, 255);
-                int down = Fit(pixel.getC(), 8, 1, 0, 255);
+                int up = Map(pixel.getC(), 0, 8, 0, 255);
+                int down = Map(pixel.getC(), 8, 0, 0, 255);
                 g.setColor(new Color(down, up, down));
-                g.fillRect(pixel.getX(), pixel.getY(), 10, 10);
+                g.fillRect((int)pixel.getX(), pixel.getY(), 10, 10);
             }
         }
 

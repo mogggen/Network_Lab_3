@@ -1,0 +1,8 @@
+Colored pixel protocol: Lab 3
+
+Contents:
+Byte 0 - coordinate x from 0 < 201
+Byte 1 - coordinate y from 0 < 201
+Byte 2 - coordinate c from 0 < 9
+
+length : 3 bytes
